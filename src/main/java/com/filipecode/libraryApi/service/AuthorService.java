@@ -2,6 +2,7 @@ package com.filipecode.libraryApi.service;
 
 import com.filipecode.libraryApi.model.entities.Author;
 import com.filipecode.libraryApi.repositories.AuthorRepository;
+import com.filipecode.libraryApi.validator.AuthorValidator;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,12 +13,15 @@ import java.util.UUID;
 public class AuthorService {
 
     private final AuthorRepository authorRepository;
+    private final AuthorValidator authorValidator;
 
-    public AuthorService(AuthorRepository authorRepository) {
+    public AuthorService(AuthorRepository authorRepository, AuthorValidator authorValidator) {
         this.authorRepository = authorRepository;
+        this.authorValidator = authorValidator;
     }
 
     public Author save(Author author) {
+        authorValidator.validate(author);
         return authorRepository.save(author);
     }
 
@@ -25,6 +29,8 @@ public class AuthorService {
         if (author.getId() == null) {
             throw new IllegalArgumentException("For update, it´s necessary author in database.");
         }
+
+        authorValidator.validate(author);
         authorRepository.save(author);
     }
 

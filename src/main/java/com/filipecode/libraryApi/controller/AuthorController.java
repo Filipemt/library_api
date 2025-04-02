@@ -1,12 +1,11 @@
 package com.filipecode.libraryApi.controller;
 
+import com.filipecode.libraryApi.exceptions.DuplicateRegisterException;
 import com.filipecode.libraryApi.model.dtos.AuthorDTO;
 import com.filipecode.libraryApi.model.dtos.AuthorResponseDTO;
+import com.filipecode.libraryApi.model.dtos.ErrorResponseDTO;
 import com.filipecode.libraryApi.model.entities.Author;
 import com.filipecode.libraryApi.service.AuthorService;
-import org.apache.coyote.Response;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -28,18 +27,23 @@ public class AuthorController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> createAuthor(@RequestBody AuthorDTO author) {
-        Author authorEntity = author.mapping();
-        authorService.save(authorEntity);
+    public ResponseEntity<Object> createAuthor(@RequestBody AuthorDTO author) {
+        try {
+            Author authorEntity = author.mapping();
+            authorService.save(authorEntity);
 
-        // http://localhost:8080/autores/{id do usuário criado}
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(authorEntity.getId())
-                .toUri();
+            // http://localhost:8080/autores/{id do usuário criado}
+            URI location = ServletUriComponentsBuilder
+                    .fromCurrentRequest()
+                    .path("/{id}")
+                    .buildAndExpand(authorEntity.getId())
+                    .toUri();
 
-        return ResponseEntity.created(location).build();
+            return ResponseEntity.created(location).build();
+        } catch (DuplicateRegisterException e) {
+            var errorResponseDTO = ErrorResponseDTO.conflict(e.getMessage());
+            return ResponseEntity.status(errorResponseDTO.status()).body(errorResponseDTO);
+        }
     }
 
     @GetMapping("{id}")
