@@ -92,7 +92,7 @@ public class AuthorController {
 
     @PutMapping("{id}")
     public ResponseEntity<Void> updateAuthor(@PathVariable String id,
-                                             @RequestBody AuthorResponseDTO authorResponseDTO) {
+                                             @RequestBody AuthorDTO AuthorDTO) {
 
         UUID authorId = UUID.fromString(id);
         Optional<Author> optionalAuthor = authorService.getById(authorId);
@@ -102,9 +102,9 @@ public class AuthorController {
         }
 
         var author = optionalAuthor.get();
-        author.setName(authorResponseDTO.name());
-        author.setNationality(authorResponseDTO.nationality());
-        author.setDateOfBirth(authorResponseDTO.dateOfBirth());
+        author.setName(AuthorDTO.name());
+        author.setNationality(AuthorDTO.nationality());
+        author.setDateOfBirth(AuthorDTO.dateOfBirth());
 
         authorService.update(author);
 
