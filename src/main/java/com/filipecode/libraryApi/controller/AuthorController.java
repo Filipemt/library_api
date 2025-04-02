@@ -4,6 +4,7 @@ import com.filipecode.libraryApi.model.dtos.AuthorDTO;
 import com.filipecode.libraryApi.model.dtos.AuthorResponseDTO;
 import com.filipecode.libraryApi.model.entities.Author;
 import com.filipecode.libraryApi.service.AuthorService;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,8 +12,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("autores")
@@ -68,5 +71,22 @@ public class AuthorController {
 
         authorService.deleteById(optionalAuthor.get());
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping
+    public ResponseEntity<List<AuthorResponseDTO>> listAuthor(@RequestParam(value = "name", required = false) String name,
+                                                @RequestParam(value = "nationality", required = false) String nationality) {
+
+        List<Author> searchResult = authorService.filterAuthor(name, nationality);
+        List<AuthorResponseDTO> list = searchResult
+                .stream()
+                .map(author -> new AuthorResponseDTO(
+                        author.getId(),
+                        author.getName(),
+                        author.getDateOfBirth(),
+                        author.getNationality())
+                ).collect(Collectors.toList());
+
+        return ResponseEntity.ok(list);
     }
 }
