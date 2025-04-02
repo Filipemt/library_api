@@ -2,7 +2,6 @@ package com.filipecode.libraryApi.service;
 
 import com.filipecode.libraryApi.model.entities.Author;
 import com.filipecode.libraryApi.repositories.AuthorRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -23,5 +22,9 @@ public class AuthorService {
 
     public Optional<Author> getById(UUID id) {
         return authorRepository.findById(id);
+    }
+
+    public void deleteById(Author author) {
+        authorRepository.delete(author);
     }
 }
