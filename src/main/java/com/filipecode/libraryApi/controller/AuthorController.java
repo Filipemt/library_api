@@ -7,8 +7,8 @@ import com.filipecode.libraryApi.model.dtos.AuthorResponseDTO;
 import com.filipecode.libraryApi.model.dtos.ErrorResponseDTO;
 import com.filipecode.libraryApi.model.entities.Author;
 import com.filipecode.libraryApi.service.AuthorService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -20,13 +20,10 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("autores")
+@RequiredArgsConstructor
 public class AuthorController {
 
     private final AuthorService authorService;
-
-    public AuthorController(AuthorService authorService) {
-        this.authorService = authorService;
-    }
 
     @PostMapping
     public ResponseEntity<Object> createAuthor(@RequestBody AuthorDTO author) {

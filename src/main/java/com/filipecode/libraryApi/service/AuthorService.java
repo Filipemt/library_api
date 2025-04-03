@@ -5,6 +5,7 @@ import com.filipecode.libraryApi.model.entities.Author;
 import com.filipecode.libraryApi.repositories.AuthorRepository;
 import com.filipecode.libraryApi.repositories.BookRepository;
 import com.filipecode.libraryApi.validator.AuthorValidator;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,17 +13,12 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class AuthorService {
 
     private final AuthorRepository authorRepository;
     private final AuthorValidator authorValidator;
     private final BookRepository bookRepository;
-
-    public AuthorService(AuthorRepository authorRepository, AuthorValidator authorValidator, BookRepository bookRepository) {
-        this.authorRepository = authorRepository;
-        this.authorValidator = authorValidator;
-        this.bookRepository = bookRepository;
-    }
 
     public Author save(Author author) {
         authorValidator.validate(author);
