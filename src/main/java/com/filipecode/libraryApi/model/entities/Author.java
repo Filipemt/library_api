@@ -35,7 +35,9 @@ public class Author {
     @Column(name = "nacionalidade", length = 50, nullable = false)
     private String nationality;
 
-    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "author", fetch = FetchType.LAZY
+//    cascade = CascadeType.ALL,
+    )
     private List<Book> books;
 
     @CreatedDate

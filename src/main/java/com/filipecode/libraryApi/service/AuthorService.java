@@ -1,7 +1,9 @@
 package com.filipecode.libraryApi.service;
 
+import com.filipecode.libraryApi.exceptions.OperationNotAllowedException;
 import com.filipecode.libraryApi.model.entities.Author;
 import com.filipecode.libraryApi.repositories.AuthorRepository;
+import com.filipecode.libraryApi.repositories.BookRepository;
 import com.filipecode.libraryApi.validator.AuthorValidator;
 import org.springframework.stereotype.Service;
 
@@ -14,10 +16,12 @@ public class AuthorService {
 
     private final AuthorRepository authorRepository;
     private final AuthorValidator authorValidator;
+    private final BookRepository bookRepository;
 
-    public AuthorService(AuthorRepository authorRepository, AuthorValidator authorValidator) {
+    public AuthorService(AuthorRepository authorRepository, AuthorValidator authorValidator, BookRepository bookRepository) {
         this.authorRepository = authorRepository;
         this.authorValidator = authorValidator;
+        this.bookRepository = bookRepository;
     }
 
     public Author save(Author author) {
@@ -39,6 +43,9 @@ public class AuthorService {
     }
 
     public void deleteById(Author author) {
+        if (authorHasBook(author)) {
+            throw new OperationNotAllowedException("Author of registered books");
+        }
         authorRepository.delete(author);
     }
 
@@ -53,5 +60,9 @@ public class AuthorService {
             return authorRepository.findByNationality(nationality);
         }
         return authorRepository.findAll();
+    }
+
+    public boolean authorHasBook(Author author) {
+        return bookRepository.existsByAuthor(author);
     }
 }

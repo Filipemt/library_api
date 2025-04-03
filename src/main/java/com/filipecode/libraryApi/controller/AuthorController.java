@@ -1,12 +1,14 @@
 package com.filipecode.libraryApi.controller;
 
 import com.filipecode.libraryApi.exceptions.DuplicateRegisterException;
+import com.filipecode.libraryApi.exceptions.OperationNotAllowedException;
 import com.filipecode.libraryApi.model.dtos.AuthorDTO;
 import com.filipecode.libraryApi.model.dtos.AuthorResponseDTO;
 import com.filipecode.libraryApi.model.dtos.ErrorResponseDTO;
 import com.filipecode.libraryApi.model.entities.Author;
 import com.filipecode.libraryApi.service.AuthorService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -65,16 +67,21 @@ public class AuthorController {
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<Void> deleteAuthorById(@PathVariable String id) {
-        UUID authorId = UUID.fromString(id);
-        Optional<Author> optionalAuthor = authorService.getById(authorId);
+    public ResponseEntity<Object> deleteAuthorById(@PathVariable String id) {
+        try {
+            UUID authorId = UUID.fromString(id);
+            Optional<Author> optionalAuthor = authorService.getById(authorId);
 
-        if (optionalAuthor.isEmpty()) {
-            return ResponseEntity.notFound().build();
+            if (optionalAuthor.isEmpty()) {
+                return ResponseEntity.notFound().build();
+            }
+
+            authorService.deleteById(optionalAuthor.get());
+            return ResponseEntity.noContent().build();
+        } catch (OperationNotAllowedException e) {
+            var errorResponse = ErrorResponseDTO.patternResponse(e.getMessage());
+            return ResponseEntity.status(errorResponse.status()).body(errorResponse);
         }
-
-        authorService.deleteById(optionalAuthor.get());
-        return ResponseEntity.noContent().build();
     }
 
     @GetMapping
