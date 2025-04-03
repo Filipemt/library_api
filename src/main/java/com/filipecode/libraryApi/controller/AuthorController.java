@@ -95,23 +95,28 @@ public class AuthorController {
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<Void> updateAuthor(@PathVariable String id,
+    public ResponseEntity<Object> updateAuthor(@PathVariable String id,
                                              @RequestBody AuthorDTO AuthorDTO) {
 
-        UUID authorId = UUID.fromString(id);
-        Optional<Author> optionalAuthor = authorService.getById(authorId);
+        try {
+            UUID authorId = UUID.fromString(id);
+            Optional<Author> optionalAuthor = authorService.getById(authorId);
 
-        if (optionalAuthor.isEmpty()) {
-            return ResponseEntity.notFound().build();
+            if (optionalAuthor.isEmpty()) {
+                return ResponseEntity.notFound().build();
+            }
+
+            var author = optionalAuthor.get();
+            author.setName(AuthorDTO.name());
+            author.setNationality(AuthorDTO.nationality());
+            author.setDateOfBirth(AuthorDTO.dateOfBirth());
+
+            authorService.update(author);
+
+            return ResponseEntity.noContent().build();
+        } catch (DuplicateRegisterException e) {
+            var errorResponseDTO = ErrorResponseDTO.conflict(e.getMessage());
+            return ResponseEntity.status(errorResponseDTO.status()).body(errorResponseDTO);
         }
-
-        var author = optionalAuthor.get();
-        author.setName(AuthorDTO.name());
-        author.setNationality(AuthorDTO.nationality());
-        author.setDateOfBirth(AuthorDTO.dateOfBirth());
-
-        authorService.update(author);
-
-        return ResponseEntity.noContent().build();
     }
 }
