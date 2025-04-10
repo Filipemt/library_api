@@ -101,7 +101,7 @@ public class AuthorController {
 
     @PutMapping("{id}")
     public ResponseEntity<Object> updateAuthor(@PathVariable String id,
-                                             @RequestBody AuthorDTO AuthorDTO) {
+                                             @RequestBody @Valid AuthorDTO AuthorDTO) {
 
         try {
             UUID authorId = UUID.fromString(id);
