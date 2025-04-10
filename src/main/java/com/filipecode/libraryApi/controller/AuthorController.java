@@ -7,6 +7,7 @@ import com.filipecode.libraryApi.model.dtos.AuthorResponseDTO;
 import com.filipecode.libraryApi.model.dtos.ErrorResponseDTO;
 import com.filipecode.libraryApi.model.entities.Author;
 import com.filipecode.libraryApi.service.AuthorService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,7 +27,7 @@ public class AuthorController {
     private final AuthorService authorService;
 
     @PostMapping
-    public ResponseEntity<Object> createAuthor(@RequestBody AuthorDTO author) {
+    public ResponseEntity<Object> createAuthor(@RequestBody @Valid AuthorDTO author) {
         try {
             Author authorEntity = author.mapping();
             authorService.save(authorEntity);
