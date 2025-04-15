@@ -37,10 +37,10 @@ class BookRepositoryTest {
         book.setPrice(BigDecimal.valueOf(35));
 
         Author author = authorRepository
-                .findById(UUID.fromString("ce2cc67b-d0f5-454b-8a99-773204edfa50"))
+                .findById(UUID.fromString("8bfd9e21-ed93-4719-bea6-7e819b5bab6b"))
                 .orElse(null);
 
-        book.setAuthor(new Author());
+        book.setAuthor(author);
 
         bookRepository.save(book);
     }
