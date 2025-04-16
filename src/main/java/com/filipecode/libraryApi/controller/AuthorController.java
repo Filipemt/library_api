@@ -1,5 +1,7 @@
 package com.filipecode.libraryApi.controller;
 
+import com.filipecode.libraryApi.controller.mappers.AuthorMapper;
+import com.filipecode.libraryApi.controller.mappers.AuthorResponseMapper;
 import com.filipecode.libraryApi.exceptions.DuplicateRegisterException;
 import com.filipecode.libraryApi.exceptions.OperationNotAllowedException;
 import com.filipecode.libraryApi.model.dtos.AuthorDTO;
@@ -25,18 +27,20 @@ import java.util.stream.Collectors;
 public class AuthorController {
 
     private final AuthorService authorService;
+    private final AuthorMapper authorMapper;
+    private final AuthorResponseMapper authorResponseMapper;
 
     @PostMapping
-    public ResponseEntity<Object> createAuthor(@RequestBody @Valid AuthorDTO author) {
+    public ResponseEntity<Object> createAuthor(@RequestBody @Valid AuthorDTO authorDTO) {
         try {
-            Author authorEntity = author.mapping();
-            authorService.save(authorEntity);
+            Author author = authorMapper.toEntity(authorDTO);
+            authorService.save(author);
 
             // http://localhost:8080/autores/{id do usuário criado}
             URI location = ServletUriComponentsBuilder
                     .fromCurrentRequest()
                     .path("/{id}")
-                    .buildAndExpand(authorEntity.getId())
+                    .buildAndExpand(author.getId())
                     .toUri();
 
             return ResponseEntity.created(location).build();
@@ -49,19 +53,12 @@ public class AuthorController {
     @GetMapping("{id}")
     public ResponseEntity<AuthorResponseDTO> getAuthorById(@PathVariable String id) {
         var authorId = UUID.fromString(id);
-        Optional<Author> optionalAuthor = authorService.getById(authorId);
 
-        if (optionalAuthor.isPresent()) {
-            Author author = optionalAuthor.get();
-            AuthorResponseDTO authorResponseDTO = new AuthorResponseDTO(author.getId(),
-                    author.getName(),
-                    author.getDateOfBirth(),
-                    author.getNationality());
-
-            return ResponseEntity.ok(authorResponseDTO);
-        }
-
-        return ResponseEntity.notFound().build();
+        return authorService.getById(authorId)
+                .map(author -> {
+                    AuthorResponseDTO authorResponseDTO = authorResponseMapper.toDTO(author);
+                    return ResponseEntity.ok(authorResponseDTO);
+                }).orElseGet( () -> ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("{id}")
@@ -89,12 +86,8 @@ public class AuthorController {
         List<Author> searchResult = authorService.filterAuthor(name, nationality);
         List<AuthorResponseDTO> list = searchResult
                 .stream()
-                .map(author -> new AuthorResponseDTO(
-                        author.getId(),
-                        author.getName(),
-                        author.getDateOfBirth(),
-                        author.getNationality())
-                ).collect(Collectors.toList());
+                .map(authorResponseMapper::toDTO)
+                .collect(Collectors.toList());
 
         return ResponseEntity.ok(list);
     }
