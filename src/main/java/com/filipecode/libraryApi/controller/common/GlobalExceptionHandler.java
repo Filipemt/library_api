@@ -1,5 +1,7 @@
 package com.filipecode.libraryApi.controller.common;
 
+import com.filipecode.libraryApi.exceptions.DuplicateRegisterException;
+import com.filipecode.libraryApi.exceptions.OperationNotAllowedException;
 import com.filipecode.libraryApi.model.dtos.ErrorResponseDTO;
 import com.filipecode.libraryApi.model.dtos.FieldErrorDTO;
 import org.springframework.http.HttpStatus;
@@ -30,5 +32,25 @@ public class GlobalExceptionHandler {
                 "Error validation",
                 errorList
                 );
+    }
+
+    @ExceptionHandler(DuplicateRegisterException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorResponseDTO handleDuplicateRegisterException(DuplicateRegisterException e) {
+        return ErrorResponseDTO.conflict(e.getMessage());
+    }
+
+    @ExceptionHandler(OperationNotAllowedException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponseDTO handleOperationNotAllowedException(OperationNotAllowedException e) {
+        return ErrorResponseDTO.patternResponse(e.getMessage());
+    }
+
+    @ExceptionHandler(RuntimeException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ErrorResponseDTO handleInternalServerError(RuntimeException e) {
+        return new ErrorResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                "Internal server error. Contact the system administration",
+                List.of());
     }
 }
