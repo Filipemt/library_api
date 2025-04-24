@@ -9,7 +9,7 @@ import java.util.UUID;
 public record ResultResearchBookDTO(
         UUID id,
         String isbn,
-        String titulo,
+        String title,
         LocalDate publicationDate,
         BookGender gender,
         BigDecimal price,
