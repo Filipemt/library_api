@@ -19,4 +19,10 @@ public class BookSpecs {
     public static Specification<Book> genderEqual(BookGender gender) {
         return ((root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("gender"), gender));
     }
+
+    public static Specification<Book> publicationDateEqual(Integer publicationDate) {
+        return (root, query, criteriaBuilder) ->
+                criteriaBuilder.equal(criteriaBuilder.function("to_char", String.class,
+                        root.get("publicationDate"), criteriaBuilder.literal("YYYY")), publicationDate.toString());
+    }
 }

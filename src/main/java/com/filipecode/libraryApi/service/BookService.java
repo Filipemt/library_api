@@ -55,6 +55,9 @@ public class BookService {
         if (gender != null) {
             specification = specification.and(genderEqual(gender));
         }
+        if (publicationDate != null) {
+            specification = specification.and(publicationDateEqual(publicationDate));
+        }
 
         return bookRepository.findAll(specification);
     }
