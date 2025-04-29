@@ -3,7 +3,7 @@ package com.filipecode.libraryApi.service;
 import com.filipecode.libraryApi.model.entities.Book;
 import com.filipecode.libraryApi.model.enums.BookGender;
 import com.filipecode.libraryApi.repositories.BookRepository;
-import com.filipecode.libraryApi.repositories.specs.BookSpecs;
+import com.filipecode.libraryApi.validator.BookValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -18,8 +18,10 @@ import static com.filipecode.libraryApi.repositories.specs.BookSpecs.*;
 public class BookService {
 
     private final BookRepository bookRepository;
+    private final BookValidator bookValidator;
 
     public Book save(Book book) {
+        bookValidator.validate(book);
         return bookRepository.save(book);
     }
 
@@ -70,6 +72,7 @@ public class BookService {
             throw new IllegalArgumentException("For update, it´s necessary book in database.");
         }
 
+        bookValidator.validate(book);
         bookRepository.save(book);
     }
 }
