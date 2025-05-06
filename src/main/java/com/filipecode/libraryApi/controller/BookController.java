@@ -9,6 +9,7 @@ import com.filipecode.libraryApi.service.BookService;
 import jakarta.servlet.ServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -55,21 +56,20 @@ public class BookController implements GenericController{
     }
 
     @GetMapping
-    public ResponseEntity<List<ResultResearchBookDTO>> search(
+    public ResponseEntity<Page<ResultResearchBookDTO>> search(
             @RequestParam(value = "isbn", required = false) String isbn,
             @RequestParam(value = "title", required = false) String title,
             @RequestParam(value = "author-name", required = false) String authorName,
             @RequestParam(value = "gender", required = false) BookGender gender,
-            @RequestParam(value = "publication-date", required = false) Integer publicationDate
+            @RequestParam(value = "publication-date", required = false) Integer publicationDate,
+            @RequestParam(value = "page", defaultValue = "0") Integer page,
+            @RequestParam(value = "page-size", defaultValue = "10") Integer pageSize
     ) {
-        var result = bookService.search(isbn, title, authorName, gender, publicationDate);
+        Page<Book> resultPage = bookService.search(isbn, title, authorName, gender, publicationDate, page, pageSize);
 
-        var list = result
-                .stream()
-                .map(bookMapper::toDTO)
-                .collect(Collectors.toList());
+        Page<ResultResearchBookDTO> result = resultPage.map(bookMapper::toDTO);
 
-        return ResponseEntity.ok(list);
+        return ResponseEntity.ok(result);
     }
 
     @PutMapping("{id}")

@@ -5,6 +5,9 @@ import com.filipecode.libraryApi.model.enums.BookGender;
 import com.filipecode.libraryApi.repositories.BookRepository;
 import com.filipecode.libraryApi.validator.BookValidator;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -34,16 +37,12 @@ public class BookService {
     }
 
     // Isbn, Titulo, Nome Autor, genero e ano de publicação
-    public List<Book> search(
-            String isbn, String title, String authorName, BookGender gender, Integer publicationDate
+    public Page<Book> search(
+            String isbn, String title, String authorName,
+            BookGender gender, Integer publicationDate,
+            Integer page, Integer pageSize
+
     ) {
-//        Specification<Book> specs = Specification
-//                .where(BookSpecs.isbnEqual(isbn))
-//                .and(BookSpecs.titleLike(title))
-//                .and(Book)
-//                .and(BookSpecs.genderEqual(gender))
-//                .and(BookSpecs.publicationDateEqual(publicationDate));
-//
 
         // SELECT * FROM livro WHERE 0 = 0
         Specification<Book> specification = Specification.where((root, query, criteriaBuilder) -> criteriaBuilder.conjunction());
@@ -64,7 +63,9 @@ public class BookService {
             specification = specification.and(authorNameLike(authorName));
         }
 
-        return bookRepository.findAll(specification);
+        Pageable pageRequest = PageRequest.of(page, pageSize);
+
+        return bookRepository.findAll(specification, pageRequest);
     }
 
     public void update(Book book) {
