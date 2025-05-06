@@ -1,6 +1,7 @@
 package com.filipecode.libraryApi.validator;
 
 import com.filipecode.libraryApi.exceptions.DuplicateRegisterException;
+import com.filipecode.libraryApi.exceptions.InvalidFieldException;
 import com.filipecode.libraryApi.model.entities.Book;
 import com.filipecode.libraryApi.repositories.BookRepository;
 import lombok.RequiredArgsConstructor;
@@ -12,12 +13,23 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class BookValidator {
 
+    private static final int YEAR_PRICE_REQUIRED = 2020;
+
     private final BookRepository bookRepository;
 
     public void validate(Book book) {
         if (existsBookWithIsbn(book)) {
             throw new DuplicateRegisterException("ISBN already exists!");
         }
+
+        if (isRequiredPrice(book)) {
+            throw new InvalidFieldException("price", "Price is required!");
+        }
+    }
+
+    private boolean isRequiredPrice(Book book) {
+        return book.getPrice() == null &&
+                book.getPublicationDate().getYear() >= YEAR_PRICE_REQUIRED;
     }
 
     private boolean existsBookWithIsbn(Book book) {

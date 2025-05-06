@@ -1,6 +1,7 @@
 package com.filipecode.libraryApi.controller.common;
 
 import com.filipecode.libraryApi.exceptions.DuplicateRegisterException;
+import com.filipecode.libraryApi.exceptions.InvalidFieldException;
 import com.filipecode.libraryApi.exceptions.OperationNotAllowedException;
 import com.filipecode.libraryApi.model.dtos.ErrorResponseDTO;
 import com.filipecode.libraryApi.model.dtos.FieldErrorDTO;
@@ -44,6 +45,15 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponseDTO handleOperationNotAllowedException(OperationNotAllowedException e) {
         return ErrorResponseDTO.patternResponse(e.getMessage());
+    }
+
+    @ExceptionHandler(InvalidFieldException.class)
+    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+    public ErrorResponseDTO handleInvalidFieldException(InvalidFieldException e) {
+        return new ErrorResponseDTO(
+                HttpStatus.UNPROCESSABLE_ENTITY.value(),
+                "Error validation",
+                List.of(new FieldErrorDTO(e.getField(), e.getMessage())));
     }
 
     @ExceptionHandler(RuntimeException.class)
