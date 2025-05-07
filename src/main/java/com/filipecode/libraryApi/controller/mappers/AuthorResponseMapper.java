@@ -1,6 +1,6 @@
 package com.filipecode.libraryApi.controller.mappers;
 
-import com.filipecode.libraryApi.model.dtos.AuthorResponseDTO;
+import com.filipecode.libraryApi.model.dtos.response.AuthorResponseDTO;
 import com.filipecode.libraryApi.model.entities.Author;
 import org.mapstruct.Mapper;
 

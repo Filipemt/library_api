@@ -1,4 +1,4 @@
-package com.filipecode.libraryApi.model.dtos;
+package com.filipecode.libraryApi.model.dtos.response;
 
 import java.time.LocalDate;
 import java.util.UUID;

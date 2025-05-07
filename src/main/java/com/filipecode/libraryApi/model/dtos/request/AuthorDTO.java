@@ -1,4 +1,4 @@
-package com.filipecode.libraryApi.model.dtos;
+package com.filipecode.libraryApi.model.dtos.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

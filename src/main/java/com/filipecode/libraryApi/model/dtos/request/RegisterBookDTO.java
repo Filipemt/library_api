@@ -1,4 +1,4 @@
-package com.filipecode.libraryApi.model.dtos;
+package com.filipecode.libraryApi.model.dtos.request;
 
 import com.filipecode.libraryApi.model.enums.BookGender;
 import jakarta.validation.constraints.NotBlank;

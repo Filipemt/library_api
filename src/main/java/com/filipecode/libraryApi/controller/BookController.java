@@ -1,8 +1,8 @@
 package com.filipecode.libraryApi.controller;
 
 import com.filipecode.libraryApi.controller.mappers.BookMapper;
-import com.filipecode.libraryApi.model.dtos.RegisterBookDTO;
-import com.filipecode.libraryApi.model.dtos.ResultResearchBookDTO;
+import com.filipecode.libraryApi.model.dtos.request.RegisterBookDTO;
+import com.filipecode.libraryApi.model.dtos.response.ResultResearchBookDTO;
 import com.filipecode.libraryApi.model.entities.Book;
 import com.filipecode.libraryApi.model.enums.BookGender;
 import com.filipecode.libraryApi.service.BookService;

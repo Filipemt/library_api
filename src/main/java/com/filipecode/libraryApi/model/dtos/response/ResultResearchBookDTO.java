@@ -1,5 +1,6 @@
-package com.filipecode.libraryApi.model.dtos;
+package com.filipecode.libraryApi.model.dtos.response;
 
+import com.filipecode.libraryApi.model.dtos.request.AuthorDTO;
 import com.filipecode.libraryApi.model.enums.BookGender;
 
 import java.math.BigDecimal;

@@ -2,8 +2,8 @@ package com.filipecode.libraryApi.controller;
 
 import com.filipecode.libraryApi.controller.mappers.AuthorMapper;
 import com.filipecode.libraryApi.controller.mappers.AuthorResponseMapper;
-import com.filipecode.libraryApi.model.dtos.AuthorDTO;
-import com.filipecode.libraryApi.model.dtos.AuthorResponseDTO;
+import com.filipecode.libraryApi.model.dtos.request.AuthorDTO;
+import com.filipecode.libraryApi.model.dtos.response.AuthorResponseDTO;
 import com.filipecode.libraryApi.model.entities.Author;
 import com.filipecode.libraryApi.service.AuthorService;
 import jakarta.validation.Valid;
