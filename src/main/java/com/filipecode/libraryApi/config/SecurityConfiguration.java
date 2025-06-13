@@ -30,7 +30,9 @@ public class SecurityConfiguration {
                 // Isso significa que o Spring Security irá gerar uma página de login padrão se o usuário tentar acessar um recurso protegido sem estar autenticado.
                 // Customizer.withDefaults() aplica as configurações padrão, mas pode personalizar o formulário de login, URL de sucesso, URL de falha, etc.
                 // Se você não definir isso e tiver .authorizeHttpRequests().anyRequest().authenticated(),
-                .formLogin(Customizer.withDefaults())
+                .formLogin(configurer -> {
+                    configurer.loginPage("/login").permitAll(); // Customizando a página
+                })
 
                 // .httpBasic(Customizer.withDefaults()): Habilita a autenticação HTTP Basic com as configurações padrão.
                 // Na autenticação HTTP Basic, o cliente (navegador ou outra aplicação) envia o nome de usuário e senha
