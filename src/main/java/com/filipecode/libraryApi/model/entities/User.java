@@ -22,7 +22,7 @@ public class User {
     @Column
     private String login;
 
-    @Column
+    @Column(name = "senha")
     private String password;
 
     @Type(ListArrayType.class) // Fazer a tradução de List para Array
