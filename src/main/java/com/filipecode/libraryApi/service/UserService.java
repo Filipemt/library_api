@@ -1,6 +1,6 @@
 package com.filipecode.libraryApi.service;
 
-import com.filipecode.libraryApi.model.entities.User;
+import com.filipecode.libraryApi.model.entities.UserLogin;
 import com.filipecode.libraryApi.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -13,14 +13,14 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public void save(User user) {
-        var password = user.getPassword();
-        user.setPassword(passwordEncoder.encode(password));
+    public void save(UserLogin userLogin) {
+        var password = userLogin.getPassword();
+        userLogin.setPassword(passwordEncoder.encode(password));
 
-        userRepository.save(user);
+        userRepository.save(userLogin);
     }
 
-    public User getByLogin(String login) {
+    public UserLogin getByLogin(String login) {
         return userRepository.findByLogin(login);
     }
 }

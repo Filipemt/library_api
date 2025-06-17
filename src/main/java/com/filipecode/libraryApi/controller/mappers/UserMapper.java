@@ -1,11 +1,11 @@
 package com.filipecode.libraryApi.controller.mappers;
 
 import com.filipecode.libraryApi.model.dtos.request.UserDTO;
-import com.filipecode.libraryApi.model.entities.User;
+import com.filipecode.libraryApi.model.entities.UserLogin;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
 public interface UserMapper {
 
-    User toEntity(UserDTO dto);
+    UserLogin toEntity(UserDTO dto);
 }
