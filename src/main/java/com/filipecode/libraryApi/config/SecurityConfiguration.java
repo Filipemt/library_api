@@ -1,5 +1,7 @@
 package com.filipecode.libraryApi.config;
 
+import com.filipecode.libraryApi.security.CustomUserDetailsService;
+import com.filipecode.libraryApi.service.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -51,20 +53,22 @@ public class SecurityConfiguration {
     }
 
     @Bean
-    public UserDetailsService userDetailsService(PasswordEncoder encoder) {
+    public UserDetailsService userDetailsService(UserService userService) {
 
-        UserDetails firstUser = User.builder()
-                .username("Filipe Mota")
-                .password(encoder.encode("123"))
-                .roles("USER")
-                .build();
+//        UserDetails firstUser = User.builder()
+//                .username("Filipe Mota")
+//                .password(encoder.encode("123"))
+//                .roles("USER")
+//                .build();
+//
+//        UserDetails secondUser = User.builder()
+//                .username("Nicoly Mota")
+//                .password(encoder.encode("321"))
+//                .roles("ADMIN")
+//                .build();
+//
+//        return new InMemoryUserDetailsManager(firstUser, secondUser);
 
-        UserDetails secondUser = User.builder()
-                .username("Nicoly Mota")
-                .password(encoder.encode("321"))
-                .roles("ADMIN")
-                .build();
-
-        return new InMemoryUserDetailsManager(firstUser, secondUser);
+        return new CustomUserDetailsService(userService);
     }
 }
