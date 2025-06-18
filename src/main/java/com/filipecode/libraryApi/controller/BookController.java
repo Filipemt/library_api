@@ -11,6 +11,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -24,6 +25,7 @@ public class BookController implements GenericController{
     private final BookMapper bookMapper;
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('OPERADOR', 'GERENTE')")
     public ResponseEntity<Void> saveBook(@RequestBody @Valid RegisterBookDTO registerBookDTO) {
 
         Book book = bookMapper.toEntity(registerBookDTO);
@@ -35,6 +37,7 @@ public class BookController implements GenericController{
     }
 
     @GetMapping("{id}")
+    @PreAuthorize("hasAnyRole('OPERADOR', 'GERENTE')")
     public ResponseEntity<ResultResearchBookDTO> getBookById(@PathVariable String id, ServletRequest servletRequest) {
         return bookService.getById(UUID.fromString(id))
                 .map(book -> {
@@ -44,6 +47,8 @@ public class BookController implements GenericController{
     }
 
     @DeleteMapping("{id}")
+    @PreAuthorize("hasAnyRole('OPERADOR', 'GERENTE')")
+
     public ResponseEntity<Object> deleteBookById(@PathVariable String id) {
         return bookService.getById(UUID.fromString(id))
                 .map(book -> {
@@ -54,6 +59,7 @@ public class BookController implements GenericController{
     }
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('OPERADOR', 'GERENTE')")
     public ResponseEntity<Page<ResultResearchBookDTO>> search(
             @RequestParam(value = "isbn", required = false) String isbn,
             @RequestParam(value = "title", required = false) String title,
@@ -71,6 +77,7 @@ public class BookController implements GenericController{
     }
 
     @PutMapping("{id}")
+    @PreAuthorize("hasAnyRole('OPERADOR', 'GERENTE')")
     public ResponseEntity<Object> update(@PathVariable String id, @RequestBody @Valid RegisterBookDTO registerBookDTO) {
         return bookService.getById(UUID.fromString(id))
                 .map(book -> {
