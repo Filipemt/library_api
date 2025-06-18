@@ -9,6 +9,7 @@ import com.filipecode.libraryApi.service.AuthorService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -27,6 +28,7 @@ public class AuthorController implements GenericController {
     private final AuthorResponseMapper authorResponseMapper;
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('GERENTE')")
     public ResponseEntity<Void> createAuthor(@RequestBody @Valid AuthorDTO authorDTO) {
         Author author = authorMapper.toEntity(authorDTO);
         authorService.save(author);
@@ -37,6 +39,7 @@ public class AuthorController implements GenericController {
     }
 
     @GetMapping("{id}")
+    @PreAuthorize("hasAnyRole('GERENTE', 'OPERADOR')")
     public ResponseEntity<AuthorResponseDTO> getAuthorById(@PathVariable String id) {
         var authorId = UUID.fromString(id);
 
@@ -47,20 +50,8 @@ public class AuthorController implements GenericController {
                 }).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @DeleteMapping("{id}")
-    public ResponseEntity<Void> deleteAuthorById(@PathVariable String id) {
-        UUID authorId = UUID.fromString(id);
-        Optional<Author> optionalAuthor = authorService.getById(authorId);
-
-        if (optionalAuthor.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-
-        authorService.deleteById(optionalAuthor.get());
-        return ResponseEntity.noContent().build();
-    }
-
     @GetMapping
+    @PreAuthorize("hasAnyRole('GERENTE', 'OPERADOR')")
     public ResponseEntity<List<AuthorResponseDTO>> listAuthor(@RequestParam(value = "name", required = false) String name,
                                                               @RequestParam(value = "nationality", required = false) String nationality) {
 
@@ -73,7 +64,22 @@ public class AuthorController implements GenericController {
         return ResponseEntity.ok(list);
     }
 
+    @DeleteMapping("{id}")
+    @PreAuthorize("hasAnyRole('GERENTE')")
+    public ResponseEntity<Void> deleteAuthorById(@PathVariable String id) {
+        UUID authorId = UUID.fromString(id);
+        Optional<Author> optionalAuthor = authorService.getById(authorId);
+
+        if (optionalAuthor.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        authorService.deleteById(optionalAuthor.get());
+        return ResponseEntity.noContent().build();
+    }
+
     @PutMapping("{id}")
+    @PreAuthorize("hasAnyRole('GERENTE')")
     public ResponseEntity<Void> updateAuthor(@PathVariable String id,
                                                @RequestBody @Valid AuthorDTO AuthorDTO) {
 
