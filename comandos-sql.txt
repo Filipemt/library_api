@@ -21,3 +21,10 @@ create table livro (
    id_autor uuid not null references autor(id),
    constraint chk_genero check (genero in ('FICCAO', 'FANTASIA', 'MISTERIO','ROMANCE', 'BIOGRAFIA', 'CIENCIA') )
 );
+
+create table usuario(
+    id UUID NOT NULL PRIMARY KEY,
+    login VARCHAR(20) NOT NULL UNIQUE,
+    senha VARCHAR(300) NOT NULL,
+    roles VARCHAR[]
+);
