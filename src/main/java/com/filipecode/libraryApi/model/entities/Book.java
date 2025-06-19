@@ -56,7 +56,8 @@ public class Book {
     @Column(name = "data_atualizacao")
     private LocalDateTime updatedAt;
 
-    @Column(name = "id_usuario")
-    private UUID idUsuer;
+    @ManyToOne
+    @JoinColumn(name = "id_usuario")
+    private UserLogin userLogin;
 
 }

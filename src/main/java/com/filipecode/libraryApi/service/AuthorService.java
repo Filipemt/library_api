@@ -4,6 +4,7 @@ import com.filipecode.libraryApi.exceptions.OperationNotAllowedException;
 import com.filipecode.libraryApi.model.entities.Author;
 import com.filipecode.libraryApi.repositories.AuthorRepository;
 import com.filipecode.libraryApi.repositories.BookRepository;
+import com.filipecode.libraryApi.security.SecurityService;
 import com.filipecode.libraryApi.validator.AuthorValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,9 +20,11 @@ public class AuthorService {
     private final AuthorRepository authorRepository;
     private final AuthorValidator authorValidator;
     private final BookRepository bookRepository;
+    private final SecurityService securityService;
 
     public Author save(Author author) {
         authorValidator.validate(author);
+        author.setUserLogin(securityService.getByLoggedUser());
         return authorRepository.save(author);
     }
 

@@ -3,6 +3,7 @@ package com.filipecode.libraryApi.service;
 import com.filipecode.libraryApi.model.entities.Book;
 import com.filipecode.libraryApi.model.enums.BookGender;
 import com.filipecode.libraryApi.repositories.BookRepository;
+import com.filipecode.libraryApi.security.SecurityService;
 import com.filipecode.libraryApi.validator.BookValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -21,9 +22,11 @@ public class BookService {
 
     private final BookRepository bookRepository;
     private final BookValidator bookValidator;
+    private final SecurityService securityService;
 
     public Book save(Book book) {
         bookValidator.validate(book);
+        book.setUserLogin(securityService.getByLoggedUser());
         return bookRepository.save(book);
     }
 

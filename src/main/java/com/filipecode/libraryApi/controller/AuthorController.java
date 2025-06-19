@@ -81,7 +81,7 @@ public class AuthorController implements GenericController {
     @PutMapping("{id}")
     @PreAuthorize("hasAnyRole('GERENTE')")
     public ResponseEntity<Void> updateAuthor(@PathVariable String id,
-                                               @RequestBody @Valid AuthorDTO AuthorDTO) {
+                                             @RequestBody @Valid AuthorDTO AuthorDTO) {
 
         UUID authorId = UUID.fromString(id);
         Optional<Author> optionalAuthor = authorService.getById(authorId);
@@ -93,7 +93,7 @@ public class AuthorController implements GenericController {
         var author = optionalAuthor.get();
         author.setName(AuthorDTO.name());
         author.setNationality(AuthorDTO.nationality());
-        author.setDateOfBirth(AuthorDTO.dateOfBirth());
+        author.setDateOfBirth(AuthorDTO.dateOfBirth()); 
 
         authorService.update(author);
 
