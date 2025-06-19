@@ -1,4 +1,4 @@
-``` markdown
+```markdown
 # Library API
 
 A aplicação **Library API** é um sistema desenvolvido utilizando **Spring Boot** que permite gerenciar uma biblioteca, incluindo o cadastro de livros, autores e usuários, além de garantir a segurança através da autenticação e autorização utilizando Spring Security.
@@ -151,6 +151,41 @@ Foi configurado um sistema baseado em tokens de autenticação via Spring Securi
 - Impossibilidade de remover autores que possuem livros cadastrados.
 - Preços obrigatórios para livros publicados a partir de 2020.
 
+## Banco de Dados
+
+### Estrutura das Tabelas
+``` sql
+create table autor(
+  id uuid not null primary key,
+  nome varchar(100) not null,
+  data_nascimento date not null,
+  nacionalidade varchar(50) not null,
+  data_cadastro timestamp,
+  data_atualizacao timestamp,
+  id_usuario uuid
+);
+
+create table livro (
+   id uuid not null primary key,
+   isbn varchar(20) not null unique,
+   titulo varchar(150) not null,
+   data_publicacao date not null,
+   genero varchar(30) not null,
+   preco numeric(18,2),
+   data_cadastro timestamp,
+   data_atualizacao timestamp,
+   id_usuario uuid,
+   id_autor uuid not null references autor(id),
+   constraint chk_genero check (genero in ('FICCAO', 'FANTASIA', 'MISTERIO','ROMANCE', 'BIOGRAFIA', 'CIENCIA') )
+);
+
+create table usuario(
+    id UUID NOT NULL PRIMARY KEY,
+    login VARCHAR(20) NOT NULL UNIQUE,
+    senha VARCHAR(300) NOT NULL,
+    roles VARCHAR[]
+);
+```
 ## Requisitos
 
 - **Java 21**
@@ -174,6 +209,5 @@ Foi configurado um sistema baseado em tokens de autenticação via Spring Securi
 4. Acesse a aplicação em [http://localhost:8080](http://localhost:8080).
 
 ## Autor
+Desenvolvido por **Filipe Mota**.```
 
-Desenvolvido por **Filipe Mota**.
-```
