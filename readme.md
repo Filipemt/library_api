@@ -1,185 +1,179 @@
+``` markdown
+# Library API
 
-# Cadastro de Autor
-Deseja-se cadastrar os autores de livros, bem como realizar suas atualizações, consultas e permitir sua exclusão.
+A aplicação **Library API** é um sistema desenvolvido utilizando **Spring Boot** que permite gerenciar uma biblioteca, incluindo o cadastro de livros, autores e usuários, além de garantir a segurança através da autenticação e autorização utilizando Spring Security.
 
+## Descrição do Projeto
 
-# Atores
-Somente o Gerente pode cadastrar, atualizar e remover Autores.
-O usuário Operador poderá somente consultar os dados dos Autores.
+O projeto gerencia as entidades de uma biblioteca, com funcionalidades como:
 
-# Campos solicitados pelo negócio
-Dados que deverão ser guardados:
-- Nome (*)
-- Data de Nascimento (*)
-- Nacionalidade (*)
+- Cadastro e busca de **autores** com validações e controle de duplicidade.
+- Registro e consulta de **livros**, com busca por título, autor, ISBN, gênero e ano de publicação.
+- Gerenciamento de **usuários**, com autenticação e autorização.
+- Controle de acessos baseados em perfil (**ROLE_ADMIN**, **ROLE_USER**, etc).
 
-campos com (*) são obrigatórios
+## Tecnologias Utilizadas
 
-# Campos lógicos
-Dados não solicitados pela equipe de negócio, mas são de controle da aplicação e auditoria:
+- **Java 21**
+- **Spring Boot 3.3.4**
+  - Spring Web
+  - Spring Data JPA
+  - Spring Security
+  - Spring Validation
+- **PostgreSQL** como banco de dados relacional.
+- **MapStruct** para mapeamento de objetos DTO para entidades.
+- **Lombok** para redução de código boilerplate.
+- **Thymeleaf** para renderização da página de login customizada (frontend).
+- **Hypersistence Utils** para facilitar o uso de recursos avançados do Hibernate.
 
-- ID - UUID
-- Data Cadastro
-- Data Ultima Atualização
-- Usuário Ultima Atualização
+## Estrutura do Projeto
 
-# Regras de Negócio
-- Não permitir cadastrar um autor com mesmo nome, data de nascimento e nacionalidade, ou seja, se houver 2 autores com mesmos nome, data de nascimento e nacionalidade serão considerados repetidos, não permitir.
+### Pacotes
 
-- Não permitir excluir um Autor que possuir algum livro.
+- `com.filipecode.libraryApi.model.dtos`  
+  Contém os objetos de transferência de dados (**DTOs**) para requisição e resposta.
 
+- `com.filipecode.libraryApi.model.entities`  
+  Define as entidades mapeadas para tabelas do banco de dados, como `Author` e `Book`.
 
-# Contrato API
+- `com.filipecode.libraryApi.controller`  
+  Define os controladores REST responsáveis por expor endpoints para gerenciar livros, autores e usuários.  
 
-### Cadastrar novo Autor
+- `com.filipecode.libraryApi.repositories`  
+  Repositórios que interagem diretamente com o banco de dados usando JPA e Spring Data.
 
+- `com.filipecode.libraryApi.service`  
+  Camada de serviço que contém as regras de negócio da aplicação.
+
+- `com.filipecode.libraryApi.security`  
+  Configurações de segurança para autenticação e autorização.
+
+- `com.filipecode.libraryApi.validator`  
+  Inclui validações customizadas para entidades.
+
+- `com.filipecode.libraryApi.exceptions`  
+  Exceptions customizadas para lidar com situações como duplicidade de registro ou operação não permitida.
+
+- `com.filipecode.libraryApi.repositories.specs`  
+  Especificações do Spring Data JPA para consultas dinâmicas de livros.
+
+### Entidades Principais
+
+#### Author
+
+Representa o autor do livro.
+
+- **Atributos:**
+  - `id`: UUID
+  - `name`: Nome do autor (máx. 100 caracteres)
+  - `dateOfBirth`: Data de nascimento
+  - `nationality`: Nacionalidade (máx. 50 caracteres)
+  - `books`: Lista de livros relacionados a este autor
+
+#### Book
+
+Representa os livros cadastrados na biblioteca.
+
+- **Atributos:**
+  - `id`: UUID
+  - `isbn`: Código único do livro
+  - `title`: Título do livro
+  - `publicationDate`: Data de publicação
+  - `gender`: Gênero do livro (Enum: FICCAO, FANTASIA, MISTERIO, etc.)
+  - `price`: Preço do livro
+
+#### UserLogin
+
+Representa os usuários que podem acessar o sistema.
+
+- **Atributos:**
+  - `id`: UUID
+  - `login`: Nome de usuário único
+  - `password`: Senha (segura e criptografada)
+  - `roles`: Perfil(s) associado(s) ao usuário
+
+### Endpoints
+
+#### Gerenciamento de Livros
+
+- **POST /livros**  
+  Cadastrar um livro (requer `ROLE_OPERADOR` ou `ROLE_GERENTE`).
+
+- **GET /livros/{id}**  
+  Consultar detalhes de um livro pelo ID.
+
+- **DELETE /livros/{id}**  
+  Remover um livro do sistema.
+
+- **GET /livros**  
+  Buscar livros com filtros (ISBN, título, gênero, autor, etc.).
+
+- **PUT /livros/{id}**  
+  Atualizar dados de um livro.
+
+#### Gerenciamento de Autores
+
+- **POST /autores**  
+  Cadastrar um autor (requer `ROLE_GERENTE`).
+
+- **GET /autores/{id}**  
+  Consultar detalhes de um autor.
+
+- **DELETE /autores/{id}**  
+  Remover um autor (apenas se ele não for relacionado a livros).
+
+- **GET /autores**  
+  Listar autores com filtros opcionais de nome e nacionalidade.
+
+- **PUT /autores/{id}**  
+  Atualizar os dados de um autor existente.
+
+#### Gerenciamento de Usuários
+
+- **POST /usuarios**  
+  Registrar um novo usuário.
+
+#### Autenticação
+
+- **GET /login**  
+  Página customizada de login.
+
+### Segurança
+
+Foi configurado um sistema baseado em tokens de autenticação via Spring Security:
+
+- Autorização baseada em **roles** utilizando anotações como `@PreAuthorize`.
+- Uso do MapStruct para criar mapeadores entre entidades e DTOs de forma eficiente.
+
+### Regras de Negócio
+
+- Validação de duplicidade para autores (`AuthorValidator`) e livros (`BookValidator`).
+- Impossibilidade de remover autores que possuem livros cadastrados.
+- Preços obrigatórios para livros publicados a partir de 2020.
+
+## Requisitos
+
+- **Java 21**
+- **PostgreSQL**
+- **Maven**
+
+## Como Executar o Projeto
+
+1. Clone o repositório:
+   ```bash
+   git clone <repository-url>
+   ```
+
+2. Configure o arquivo `application.properties` com as credenciais do banco de dados.
+
+3. Execute o comando Maven para rodar a aplicação:
+   ```bash
+   mvn spring-boot:run
+   ```
+
+4. Acesse a aplicação em [http://localhost:8080](http://localhost:8080).
+
+## Autor
+
+Desenvolvido por **Filipe Mota**.
 ```
-- Requisição
-
-URI: /autores
-
-Método: POST
-
-
-Body:
-{
-  "nome": "string",
-  "dataNascimento": "date",
-  "nacionalidade": "string;
-} 
-- Resposta
-1. Sucesso
-
-Código: 201 - Created
-Header: Location - URI do recurso criado
-
-2. Erro de Validação
-
-Código: 422 - Unprocessable Entity
-Body: 
-{
-   "status": 422,
-   "message": "Erro de Validação",
-   "errors: [
-      { "field": "nome", "error": "Nome é obrigatório" }
-    ]
-}
-
-3. Autor Duplicado
-
-Código: 409 - Conflict
-Body: 
-{
-   "status": 409,
-   "message": "Registro Duplicado",
-   "errors: []
-} 
-```
-### Visualizar Detalhes do Autor
-
-```
-- Requisição
-URI: /autores/{ID}
-Método: GET
-
-
-- Respostas
-1. Sucesso
-
-Código: 200 - OK
-Body:
-{
-  "id": "uuid",
-  "nome": "string",
-  "dataNascimento": "date",
-  "nacionalidade": "string;
-}
-
-2. Erro
-
-Código: 404 - Not Found
-```
-
-### Excluir  Autor
-```
-- Requisição
-URI: /autores/{ID}
-Método: DELETE
-
-- Respostas
-1. Sucesso
-
-Código: 204 - No Content
-
-2. Erro
-
-Código: 400 - Bad Request
-
-Body: 
-{
-   "status": 400,
-   "message": "Erro na exclusão: registro está sendo utilizado.",
-   "errors: []
-}
-```
-
-### Pesquisar Autores
-```
-- Requisição
-
-URI: /autores
-Query Params: nome, nacionalidade
-
-Método: GET
-- Respostas
-1. Sucesso
-
-Código: 200 - OK
-Body:
-[{
-  "id": "uuid",
-  "nome": "string",
-  "dataNascimento": "date",
-  "nacionalidade": "string;
-}]
-```
-
-### Atualizar Autor
-```
-- Requisição
-URI: /autores/{ID}
-Método: PUT
-Body:
-{
-  "nome": "string",
-  "dataNascimento": "date",
-  "nacionalidade": "string;
-}
-
-- Resposta
-1. Sucesso
-
-Código: 204 - No Content
-
-2. Erro de Validação
-
-Código: 422 - Unprocessable Entity
-Body: 
-{
-   "status": 422,
-   "message": "Erro de Validação",
-   "errors: [
-      { "field": "nome", "error": "Nome é obrigatório" }
-    ]
-}
-
-3. Autor Duplicado
-
-Código: 409 - Conflict
-Body: 
-{
-   "status": 409,
-   "message": "Registro Duplicado",
-   "errors: []
-}
-```   
