@@ -1,7 +1,7 @@
 package com.filipecode.libraryApi.security;
 
 import com.filipecode.libraryApi.model.entities.UserLogin;
-import com.filipecode.libraryApi.service.UserService;
+import com.filipecode.libraryApi.service.UserLoginService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class CustomAuthenticationProvider implements AuthenticationProvider {
 
-    private final UserService userService;
+    private final UserLoginService userLoginService;
     private final PasswordEncoder passwordEncoder;
 
     @Override
@@ -23,7 +23,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         String login = authentication.getName();
         String typePassword = authentication.getCredentials().toString();
 
-        UserLogin foundUser = userService.getByLogin(login);
+        UserLogin foundUser = userLoginService.getByLogin(login);
 
         if (foundUser == null) {
             getErrorUserNotFound();

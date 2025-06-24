@@ -1,7 +1,7 @@
 package com.filipecode.libraryApi.config;
 
 import com.filipecode.libraryApi.security.CustomUserDetailsService;
-import com.filipecode.libraryApi.service.UserService;
+import com.filipecode.libraryApi.service.UserLoginService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -47,8 +47,8 @@ public class SecurityConfiguration {
         return new BCryptPasswordEncoder(10);
     }
 
-    public UserDetailsService userDetailsService(UserService userService) {
-        return new CustomUserDetailsService(userService);
+    public UserDetailsService userDetailsService(UserLoginService userLoginService) {
+        return new CustomUserDetailsService(userLoginService);
     }
 
     @Bean

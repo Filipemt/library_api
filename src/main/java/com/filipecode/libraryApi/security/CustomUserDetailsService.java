@@ -1,7 +1,7 @@
 package com.filipecode.libraryApi.security;
 
 import com.filipecode.libraryApi.model.entities.UserLogin;
-import com.filipecode.libraryApi.service.UserService;
+import com.filipecode.libraryApi.service.UserLoginService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -11,12 +11,12 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 @RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
 
-    private final UserService userService;
+    private final UserLoginService userLoginService;
 
     @Override
     public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
 
-         UserLogin user = userService.getByLogin(login);
+         UserLogin user = userLoginService.getByLogin(login);
 
         if (login == null) {
             throw new UsernameNotFoundException("User not found!");
