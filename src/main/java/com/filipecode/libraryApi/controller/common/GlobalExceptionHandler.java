@@ -69,6 +69,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(RuntimeException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponseDTO handleInternalServerError(RuntimeException e) {
+        System.out.println(e.getMessage());
         return new ErrorResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR.value(),
                 "Internal server error. Contact the system administration",
                 List.of());
