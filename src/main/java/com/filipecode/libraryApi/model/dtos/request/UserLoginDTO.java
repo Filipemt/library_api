@@ -9,7 +9,7 @@ public record UserLoginDTO(
         @NotBlank(message = "field mandatory")
         String login,
         @Email(message = "invalid email")
-        @NotBlank
+        @NotBlank(message = "field mandatory")
         String email,
         @NotBlank(message = "field mandatory")
         String password,
